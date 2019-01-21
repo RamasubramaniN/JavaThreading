@@ -1,0 +1,198 @@
+package com.psg.ramasubramani;
+
+import java.io.InputStreamReader;
+import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
+public class ThreadInterruption
+{
+	public static void main( String[] args )
+	{
+		//System.out.println( "Enter 1 for Executor Routine, 2 for Thread Routine" );
+		Scanner in = new Scanner( new InputStreamReader( System.in ) );
+		while ( in.hasNextInt() )
+		{
+			int x = in.nextInt();
+			if ( x == 1 )
+			{
+				System.out.println( "Executor Thread Pool Interrupt Mechanism" );
+				ExecutorService executors = Executors.newCachedThreadPool();
+				executors.execute( new RunnableGenerator( new OddGenerator() ) );
+				executors.execute( new RunnableGenerator( new EvenGenerator() ) );
+				executors.execute( new RunnableGenerator( new OddGenerator() ) );
+				executors.execute( new RunnableGenerator( new EvenGenerator() ) );
+				executors.execute( new RunnableGenerator( new OddGenerator() ) );
+				executors.execute( new RunnableGenerator( new EvenGenerator() ) );
+				try
+				{
+					Thread.sleep( 1000 ); //In milliseconds
+				}
+				catch ( InterruptedException e ) 
+				{
+					e.printStackTrace();
+				}
+				executors.shutdown();
+				executors.shutdownNow(); // Internally calls Thread.interrupt() on all the threads started by this particular executor. So each thread routine throws Interrupted exception
+			}
+			else if ( x == 2 )
+			{
+				System.out.println( "Thread Interrupt Mechanism" );
+				Thread t1 = new Thread( new RunnableGenerator( new OddGenerator() ) );
+				Thread t2 = new Thread( new RunnableGenerator( new EvenGenerator() ) );
+				Thread t3 = new Thread( new RunnableGenerator( new OddGenerator() ) );
+				Thread t4 = new Thread( new RunnableGenerator( new EvenGenerator() ) );
+				Thread t5 = new Thread( new RunnableGenerator( new OddGenerator() ) );
+				Thread t6 = new Thread( new RunnableGenerator( new EvenGenerator() ) );
+				t1.start();
+				t2.start();
+				t3.start();
+				t4.start();
+				t5.start();
+				t6.start();
+				try
+				{
+					Thread.sleep( 1000 );
+				}
+				catch ( InterruptedException e ) //7483147657
+				{
+					e.printStackTrace();
+				}
+				t1.interrupt();
+				t2.interrupt();
+				t3.interrupt();
+				t4.interrupt();
+				t5.interrupt();
+				t6.interrupt();
+			}
+			else
+			{
+				System.out.println( "Executor Individual Thread Interrupt Mechanism" );
+				ExecutorService executors = Executors.newCachedThreadPool();
+				Future< ? > future1 = executors.submit( new RunnableGenerator( new OddGenerator() ) );
+				Future< ? > future2 = executors.submit( new RunnableGenerator( new EvenGenerator() ) );
+				Future< ? > future3 = executors.submit( new RunnableGenerator( new OddGenerator() ) );
+				Future< ? > future4 = executors.submit( new RunnableGenerator( new EvenGenerator() ) );
+				Future< ? > future5 = executors.submit( new RunnableGenerator( new OddGenerator() ) );
+				Future< ? > future6 = executors.submit( new RunnableGenerator( new EvenGenerator() ) );
+				try
+				{
+					Thread.sleep( 1000 );
+				}
+				catch ( InterruptedException e ) //7483147657
+				{
+					e.printStackTrace();
+				}
+				executors.shutdown();
+				future1.cancel( true );//Attempts to cancel execution of this task. This attempt will fail if the task has already completed, 
+				//has already been cancelled, or could not be cancelled for some other reason. If successful, and this task has not started when cancel is 
+				//called, this task should never run. If the task has already started, then the mayInterruptIfRunning parameter determines 
+				//whether the thread executing this task should be interrupted in an attempt to stop the task. 
+				future2.cancel( true ); //This is the way to stop individual threads in executor pool.
+				future3.cancel( true );
+				future4.cancel( true );
+				future5.cancel( true );
+				future6.cancel( true );
+			}
+		}
+	}
+}
+
+class OddGenerator implements Marker
+{
+	private int id = idGenerator++;
+	private int count = 1;
+	public static int idGenerator = 1;
+
+	public int getId()
+	{
+		return id;
+	}
+
+	synchronized int getCount()//This method must be synchronized
+	{
+		return count;
+	}
+
+	synchronized void generate()
+	{
+		count++;
+		count++;
+	}
+}
+
+class EvenGenerator implements Marker
+{
+	private int id = idGenerator++;
+
+	public int getId()
+	{
+		return id;
+	}
+
+	private int count = 0;
+	private static int idGenerator = 1;
+
+	synchronized int getCount()
+	{
+		return count;
+	}
+
+	synchronized void generate()
+	{
+		count++;
+		count++;
+	}
+}
+
+class RunnableGenerator implements Runnable
+{
+	private Marker markerInstance = null;
+	private static volatile boolean isCancelled = false;
+
+	RunnableGenerator( Marker marker )
+	{
+		this.markerInstance = marker;
+	}
+
+	@Override
+	public void run()
+	{
+		while ( !isCancelled )
+		{
+			OddGenerator oddGenerator = null;
+			EvenGenerator evenGenerator = null;
+			try
+			{
+				if ( markerInstance instanceof OddGenerator )
+				{
+					oddGenerator = ( OddGenerator ) markerInstance;
+					oddGenerator.generate();
+					System.out.println( "Odd Generator : " + oddGenerator.getId() + "   count : " + oddGenerator.getCount() );
+					Thread.sleep( 100 );
+				}
+				else if ( markerInstance instanceof EvenGenerator )
+				{
+					evenGenerator = ( EvenGenerator ) markerInstance;
+					evenGenerator.generate();
+					System.out.println( "Even Generator : " + evenGenerator.getId() + "   count : " + evenGenerator.getCount() );
+					Thread.sleep( 100 );
+				}
+			}
+			catch ( InterruptedException ie )
+			{
+				isCancelled = true;
+				String generator = ( oddGenerator != null ? "Odd Generator" : "Even Generator" );
+				int id = ( oddGenerator != null ? oddGenerator.getId() : evenGenerator.getId() );
+				System.out.println( "Stopping Thread : " + generator + " - " + id );
+			}
+		}
+	}
+
+}
+
+interface Marker
+{
+
+}

@@ -1,0 +1,37 @@
+1) Multiprocessing, Multitasking & Multithreading
+2) Threads examples :
+  a) Garbage collector
+  b) Tomcat servlet requests & responses.
+
+Why threads?
+Clock rates.
+
+When to use threads?
+   a) Single processor. Single core. No use?
+   b) There is no waiting --> There is no IO Operation
+        i) Independent tasks
+        ii) Dependent tasks.
+   
+ Threading.java
+ FactoryThread.java
+ 
+ Synchronization problems
+    1) file reading & writing
+    2) Sequence Generator
+    
+ Synchronizing static methods.
+
+Low level APIs
+ 
+ wait()
+ yield()
+ sleep()
+ notify()
+ notifyAll()
+ join()
+ 
+ BlockingQueues.java
+ Atomicity.java
+ ExceptionHandler.java
+ ChildThreads.java
+ 
