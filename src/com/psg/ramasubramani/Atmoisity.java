@@ -52,27 +52,32 @@ public class Atmoisity
 
 	public static void main( String[] args ) throws InterruptedException
 	{
-		long i = 1;
+		long j = 1;
 		Atomic atomic = new Atomic();
 		Thread t = new Thread( atomic );
 		t.start();
-		while ( i <= 100000000 )
+		while ( j <= 100000000 )
 		{
-			atomic.printValues(); //prints non even values? 
+			atomic.printValues(); //prints only even values? 
 			//No. because the field is thread safe only if both getters and setters are synchronized, 
 			//here printValues() is not synchronized
-			i++;
+			j++;
 		}
 		TimeUnit.SECONDS.sleep( 10 );
 
 		System.out.println( "Proper synchronization" );
-		i = 1;
-		while ( i <= 2000000 )
+		j = 1;
+		SynchronizedTask synchronizedTask = new SynchronizedTask();
+		Thread t2 = new Thread(synchronizedTask);
+		t2.start();
+		while ( j <= 100000000 )
 		{
-			atomic.printValues();
-			i++;
+			synchronizedTask.printValues();
+			j++;
 		}
 		t.interrupt();//Throws interrupted exception
+		TimeUnit.SECONDS.sleep( 15 );
+		t2.interrupt();
 	}
 
 }
@@ -102,14 +107,15 @@ class Atomic implements Runnable
 
 	private synchronized void evenIncrement()
 	{
-		i++;
-		i++;
+		i++; //Step x
+		i++; // Step y
 	}
 
 	void printValues()
-	{
-		if ( i % 2 != 0 )
-			System.out.println( i );
+	{ //We are incrementing even times. So. following statement should never get printed but it is due to this is not
+		//synchronized method.
+		if ( i % 2 != 0 ) //Step A
+			System.out.println("Not synchronized : " + i );// Step B. Executes if steps sequence is x y x A B
 	}
 
 }
@@ -117,7 +123,7 @@ class Atomic implements Runnable
 class SynchronizedTask implements Runnable
 {
 	private int i = 0;
-	private volatile boolean stop = false;
+	private volatile boolean stop = false;//Volatile - For Visibility purpose. 
 
 	@Override
 	public void run()
@@ -144,9 +150,11 @@ class SynchronizedTask implements Runnable
 	}
 
 	public synchronized void printValues()
-	{
+	{//Both increment & printvalues methods are synchronized on "this" object. In a synchronized context, 
+	//if a thread acquires a monitor, no other thread can access any of the synchronized methods in the class
+	//till the monitor is released(lock is on 'this' object)
 		if ( i % 2 != 0 )
-			System.out.println( i );
+			System.out.println("Synchronized : " + i );
 	}
 
 }
