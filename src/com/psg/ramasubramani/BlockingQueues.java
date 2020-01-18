@@ -6,23 +6,31 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-//No need to use wait, notify, notifyAll(). use blocking queue, they easily solve producer consumer problems
-//In the following problem toaster is consumer for bread factory
+//No need to use wait, notify, notifyAll(). Use blocking queue, this easily solve 
+//producer/consumer problem. In the following problem,
+//toaster is consumer for bread factory
 //butterer is consumer for toaster
 //eater is consumer for butterer
 public class BlockingQueues
 {
+	//Running a Bread Production Factory.
 	public static void main( String[] args )
 	{
+		//Another Blocking Queue is ArrayBlockingQueue.
 		BlockingQueue<Bread> freshBreadQueue = new LinkedBlockingQueue<Bread>();
 		BlockingQueue<Bread> toastedBreadQueue = new LinkedBlockingQueue<Bread>();
 		BlockingQueue<Bread> butteredBreadQueue = new LinkedBlockingQueue<Bread>();
 		BlockingQueue<Bread> finishedBreadQueue = new LinkedBlockingQueue<Bread>();
 
-		ExecutorService executor = Executors.newCachedThreadPool();//Creates a thread pool that creates new threads as needed, 
-		//but will reuse previously constructed threads when they are available. These pools will typically improve the performance of programs 
-		//that execute many short-lived asynchronous tasks. Calls to execute will reuse previously constructed threads if available. 
-		//If no existing thread is available, a new thread will be created and added to the pool. 
+		ExecutorService executor = Executors.newCachedThreadPool();
+		//Creates a thread pool that creates new threads as needed, 
+		//but will reuse previously created threads when they are available. These pools will 
+		//typically improve the performance of programs that execute many short-lived 
+		//asynchronous tasks. Tasks will reuse previously created/cached threads
+		//if available and thread creation time is saved. If no threads are free, 
+		//a new thread will be created and added to the pool. 
+		//No limit on the number of threads created on the fly. 
+		//New Thread creation time on the fly is overhead.
 
 		Toasting toaster = new Toasting( freshBreadQueue, toastedBreadQueue );
 		Buttering butterer = new Buttering( toastedBreadQueue, butteredBreadQueue );
@@ -30,7 +38,6 @@ public class BlockingQueues
 
 		BreadFactory breadFactory = new BreadFactory( freshBreadQueue );
 		executor.submit( breadFactory );
-
 		executor.submit( toaster );
 		executor.submit( butterer );
 		executor.submit( pack );
@@ -87,7 +94,7 @@ class Bread
 
 class BreadFactory implements Runnable
 {
-	BlockingQueue<Bread> freshBreadQueue;
+	private BlockingQueue<Bread> freshBreadQueue;
 
 	public BreadFactory( BlockingQueue<Bread> freshBreadQueue )
 	{
@@ -98,7 +105,7 @@ class BreadFactory implements Runnable
 	public void run()
 	{
 		while ( !Thread.interrupted() )//Tests whether the current thread has been interrupted.
-			//The interrupted status of the thread is cleared by this method. In other words, 
+			//The interrupted status of the thread is cleared by invoking this method. In other words, 
 			//if this method were to be called twice in succession, the second call would return false
 		{
 			try
@@ -109,6 +116,9 @@ class BreadFactory implements Runnable
 			}
 			catch ( Exception e )
 			{
+				//Another way to stop the thread : Handle InterruptedException here. Set a flag. 
+				//Monitor the flag value instead of checking Thread.interrupted()
+				e.printStackTrace();
 			}
 		}
 	}
@@ -117,9 +127,9 @@ class BreadFactory implements Runnable
 
 class Toasting implements Runnable
 {
-	BlockingQueue<Bread> freshBreadQueue, toastedQueue;
+	private BlockingQueue<Bread> freshBreadQueue, toastedQueue;
 
-	Toasting( BlockingQueue<Bread> freshBreadQueue, BlockingQueue<Bread> toastedQueue )
+	public Toasting( BlockingQueue<Bread> freshBreadQueue, BlockingQueue<Bread> toastedQueue )
 	{
 		this.freshBreadQueue = freshBreadQueue;
 		this.toastedQueue = toastedQueue;
@@ -138,6 +148,7 @@ class Toasting implements Runnable
 			}
 			catch ( InterruptedException e )
 			{
+				e.printStackTrace();
 			}
 		}
 	}
