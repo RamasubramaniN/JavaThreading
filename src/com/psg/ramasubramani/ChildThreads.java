@@ -10,23 +10,27 @@ public class ChildThreads
 		Thread t = new Thread( new Parent( new NestedObject() ) );
 		t.setDaemon( true );
 		t.start();
+		
+		//java.lang.ThreadGroup[name=main,maxpri=10]
+		System.out.println(Thread.currentThread().getThreadGroup());
 		System.out.println( t.isDaemon() );
 		TimeUnit.MILLISECONDS.sleep( 10000 );
 	}
 }
 
 //When a daemon thread creates threads, the child threads are also daemon.
-//When a thread is created inside another thread, then, child thread inherits group, priority and isDaemon properties from its parent
+//When a thread is created inside another thread, then, child thread inherits group, 
+//priority and isDaemon properties from its parent
 //These things are performed inside THREAD CONSTRUCTOR --> INIT () method.
 //so if parent is daemon, all child threads created by the parent will also be daemon, 
 //If you want normal thread then you have to explicitly set the child's isDaemon property.
 
 class Parent implements Runnable
 {
-	NestedObject nestedObject;
-	Thread thread;
+	private NestedObject nestedObject;
+	private Thread thread;
 
-	Parent( NestedObject child )
+	public Parent( NestedObject child )
 	{
 		this.nestedObject = child;
 	}
