@@ -3,13 +3,14 @@ package com.psg.ramasubramani;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
 
 public class ExceptionHandler
 {
 	//execute vs submit
-	//execute cannot return anything,execute can take only Runnable. But submit can return,when we use Callable we will return values,
+	//execute cannot return anything,execute can take only Runnable. 
+	//But submit can return,when we use Callable we will return values,
 	//Submit is applicable for the classes which implement callable
 	//so, we need to use submit, submit return Future Generics.
 	//Future<String> s = executors.submit(new CallableClass());
@@ -17,18 +18,22 @@ public class ExceptionHandler
 	//s.cancel() sends interrupt to only the particular thread and not to other threads started by the executors
 	//But if we use executors. executor.ShutdownNow() interrupts all the threads started by the particular executors, 
 	//but it is impossible to interrupt specific thread in this case.
-	public static void main( String[] args )
+	public static void main( String[] args ) throws InterruptedException
 	{
-		//ExecutorService executors = Executors.newCachedThreadPool(); //Returns thread pool executor extends AbstractExecutorService
+		//ExecutorService executors = Executors.newCachedThreadPool(); 
+		//Returns thread pool executor extends AbstractExecutorService
 		ExecutorService executors = Executors.newCachedThreadPool( new MyThreadFactory() );
 		executors.execute( new RunnableType() );
 		executors.execute( new RunnableType() );
 		executors.execute( new RunnableType() );
 		executors.execute( new RunnableType() );
 		executors.execute( new RunnableType() );
+		TimeUnit.SECONDS.sleep(5);
+		executors.shutdownNow();
 	}
 }
 
+//Some of the checked exceptions. 1) IOException. 2) FileNotFoundException 3) NumberFormatException
 class RunnableType implements Runnable
 {
 	@Override
@@ -38,7 +43,7 @@ class RunnableType implements Runnable
 	}
 }
 
-class MyThreadFactory implements ThreadFactory
+class MyThreadFactory implements ThreadFactory //Create threads & set common properties here.
 {
 	private static int i = 0;
 
@@ -63,34 +68,24 @@ class EvenUncaughtExceptionHandler implements UncaughtExceptionHandler
 	@Override
 	public void uncaughtException( Thread t, Throwable e )
 	{
-		System.out.println( "Even Exception Handler" );
-		System.out.println( t.getName() );
-		System.out.println( e.getMessage() );
+		System.out.println( "Even Exception Handler. Name : "  + t.getName() + ", Message : " + e.getMessage());
 	}
 }
 
 class OddUnCaughtExceptionHandler implements UncaughtExceptionHandler
 {
-
 	@Override
 	public void uncaughtException( Thread t, Throwable e )
 	{
-		System.out.println( "Odd Exception Handler" );
-		System.out.println( t.getName() );
-		System.out.println( e.getMessage() );
+		System.out.println( "Odd Exception Handler. Name : "  + t.getName() + ", Message : " + e.getMessage());
 	}
-
 }
 
 class DefaultUnCaughtExceptionHandler implements UncaughtExceptionHandler
 {
-
 	@Override
 	public void uncaughtException( Thread t, Throwable e )
 	{
-		System.out.println( "Default Exception Handler" );
-		System.out.println( t.getName() );
-		System.out.println( e.getMessage() );
+		System.out.println( "Default Exception Handler. Name : "  + t.getName() + ", Message : " + e.getMessage());
 	}
-
 }

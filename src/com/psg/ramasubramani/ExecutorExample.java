@@ -14,10 +14,12 @@ public class ExecutorExample
 		exec.submit( new ABC() );
 		try
 		{
-			exec.shutdown();//Initiates an orderly shutdown in which previously submitted tasks are executed, but no new tasks will be accepted. 
+			exec.shutdown();
+			//Initiates an orderly shutdown in which previously submitted tasks will continue to execute, 
+			//but no new tasks will be accepted. 
 			//Invocation has no additional effect if already shut down. 
 			// This will shut down the pool, so, after this statement
-			//whatever the tasks we submit to this executor will not be executed by this executor.....
+			//whatever the tasks we submit to this executor will not be executed by this executor.
 			//So, new tasks we have blocked, and you cannot add any new tasks to the the pool.
 		}
 		catch ( Exception e )
@@ -30,14 +32,18 @@ public class ExecutorExample
 		}
 		try
 		{
-			exec.execute( new B() );//pool is shut down, so this task wont be added to the thread pool. This throws exception
+			exec.execute( new B() );
+			//pool is shut down, so this task wont be added to the thread pool. This throws exception
 		}
 		catch ( Exception e )
 		{
 
 		}
-		exec.shutdownNow();// This is the statement which terminates all the threads. (ie) it is not exactly terminating
-		//It interrupts all the threads started by this executor via cancel i.e through interrupts.  Then it is our implementation, to stop the threads.
+		exec.shutdownNow();
+		// This is the statement which terminates all the threads. (ie) it is not exactly terminating
+		//It interrupts all the threads started by this executor via cancel i.e through interrupts.  
+		//Then it is our implementation, to stop the threads.
+		
 		ExecutorService exe = java.util.concurrent.Executors.newFixedThreadPool( 2 );
 		System.out.println("**********Fixed Thread Pool**********");
 		exe.submit( new ABC() );
