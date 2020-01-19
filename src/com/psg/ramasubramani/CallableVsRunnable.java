@@ -14,10 +14,11 @@ public class CallableVsRunnable
 		//Runnable section
 		Thread t = new Thread( new RunnableClass() );
 		t.start();
-		//Use Callable with Executors "submit" method. It will give the handle to task output,it can throw checked exceptions
-		//(i.e.) it can communicate the exception to the parent threads.Here class should implement Callable interface.
+		//Use Callable with Executors "submit" method. It will give the handle to task output,
+		//it can throw checked exceptions (i.e.) it can communicate the exception
+		//to the parent threads. Here class should implement Callable interface.
 		
-		//Use Runnable with Executors "execute" method, if run() does not return any output.
+		//Use Runnable with Executors "execute" method, if run() does not need to return any output.
 		//Here class should implement Runnable interface.
 		
 		//Callable section
@@ -60,11 +61,13 @@ class RunnableClass implements Runnable
 	public void run()
 	{
 		int x;
-		throw new RuntimeException();//this is unchecked exception, this is thrown here itself(you can see it in console) and this is not passed to the top thread.
+		throw new RuntimeException();
+		//this is unchecked exception, this is thrown here itself(you can see it in console) and this is not passed to the top thread.
 
-		//throw new Exception() --> not possible , checked exceptions need to be handled, here it is  a thread's run method, so only way to handle
-		//is by surrounding with try catch block, because when we use runnable, you can't return values to the caller of the thread(here main method)
-		//This is done in the below class
+		//throw new Exception() --> not possible , checked exceptions need to be handled,
+		//here it is thread's run method, so only way to handle is by surrounding with try catch block, 
+		//because when we use runnable, you can't return values to the caller of the thread
+		//(here caller is main method/thread) This is done in the below class
 	}
 
 }
@@ -72,12 +75,13 @@ class RunnableClass implements Runnable
 //NoclassDefFoundError vs ClassNotFoundException
 //Compile any package. Delete one of its " .class " files. You will get NoclassDefFoundError. 
 //Because compile time there were no issues reported, everything went fine.
-//But during run time, a class file is missing. (Class is available at compile time but missing at run time). 
-//This is an error/serious issue,needs to be resolved
-//Use class.forName("com.sts.ts.MyClass"), here path is a string and there no compile time verification, at run time JVM searches 
-//the specified class file in the specified path.
+//But during run time, a class file is missing. (Class is available at compile time but missing 
+//at run time). This is an error/serious issue,needs to be resolved
+//Use class.forName("com.sts.ts.MyClass"), here path is a string and there no compile time 
+//verification, at run time JVM searches the specified class file in the specified path.
 //If the class is not present in the specified location, you will get ClassNotFoundException.
-// Not a serious issue, can fix it easily, just make class files available at run time in the specified location. 
+// Not a serious issue, can fix it easily, just make class files available 
+//at run time in the specified location. 
 
 class RunnableCheckedExcetpion implements Runnable
 {
