@@ -25,25 +25,24 @@ public class ReEntrantLock
 		//i.e. Calling a synchronized method is a blocking call, Calling thread waits/blocks
 		//indefinitely until it gets monitor.
 		//But using explicit lock we can wait and try to acquire the lock for certain period time. 
-		//If you are not able to acquire, 
-		//you do other things. no blocking here.
+		//If thread is not able to acquire monitor,
+		//don't wait, thread can continue with other things. no blocking here.
 		
 		//Explicit locks are used in LINKEDLISTS where we need to acquire the 
 		//next node's lock before releasing current node's lock
 		
-		//Javarevisited
 /**
 
 main difference between synchronized and ReentrantLock is ability to trying for 
 lock interruptibly, and with timeout. 
-Thread doesn�t need to block infinitely, which was the case with synchronized
+Thread doesn't need to block infinitely, which was the case with synchronized
 
 1) Significant difference between ReentrantLock and synchronized keyword is fairness. 
 synchronized keyword doesn't support fairness. 
  Any thread can acquire lock once released, no preference can be specified, on the 
  other hand you can make ReentrantLock fair by specifying fairness 
  property, while creating instance of ReentrantLock. Fairness property provides lock 
- to longest waiting thread, in case of contention.
+ to longest waiting thread, in case of contention. This solves Starvation issue.
 
 2) Second difference between synchronized and Reentrant lock is tryLock() method. 
 ReentrantLock provides convenient tryLock() method, which acquires 
@@ -107,11 +106,14 @@ class Printer implements Runnable
 
 class Writer implements Runnable
 {
-//	/As the name says, ReentrantLock allow threads to enter into lock on a resource more than once. 
-	//When the thread first enters into lock, a hold count is set to one. Before unlocking the thread can re-enter into lock again 
+	//As the name says, ReentrantLock allow threads to enter into lock on a resource more than once. 
+	//When the thread first enters into lock, a hold count is set to one. 
+	//Before unlocking the thread can re-enter into lock again 
 	//and every time hold count is incremented by one. For every unlock request, 
 	//hold count is decremented by one and when hold count is 0, the resource is unlocked. 
-	private Lock lock = new ReentrantLock( true ); //Creates an instance of ReentrantLock with the given fairness policy.
+	
+	//Creates an instance of ReentrantLock with the given fairness policy.	
+	private Lock lock = new ReentrantLock( true ); 
 
 	@Override
 	public void run()
@@ -130,12 +132,18 @@ class Writer implements Runnable
 			//true if the lock was acquired and false if the waiting time elapsed before the lock was acquired
 			
 			lock.lockInterruptibly(); 
+			/**
+			 * lockInterruptibly() may block if the the lock is already held by another thread and will wait 
+			 * until the lock is acquired. This is the same as with regular lock(). But if another thread 
+			 * interrupts the waiting thread lockInterruptibly() will throw InterruptedException. Avoids
+			 * infinite waiting time. Handle interrupted exception in the catch block.
+			 */
 			//Acquires the lock unless the current thread is interrupted. If the current thread: 
 			//1) has its interrupted status set on entry to this method; 
 			//2) is interrupted while acquiring the lock, and interruption of lock acquisition 
 			//is supported,then InterruptedException is thrown and the current thread's 
 			//interrupted status is cleared.
-			//nterruptible lock acquisition allows locking to be used within cancellable activities.
+			//Interruptible lock acquisition allows locking to be used within cancellable activities.
 			//The lockInterruptibly method allows us to try and acquire lock 
 			//while being available for interruption. So basically it means that; it allows the thread 
 			//to immediately react to the interrupt signal sent to it from another thread.
