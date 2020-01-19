@@ -142,7 +142,7 @@ class Toasting implements Runnable
 		{
 			try
 			{
-				Bread bread = freshBreadQueue.take();
+				Bread bread = freshBreadQueue.take();//Blocking call.
 				System.out.println( "Toasting Bread : " + bread.getId() );
 				toastedQueue.put( bread );
 			}
