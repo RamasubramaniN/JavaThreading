@@ -9,7 +9,9 @@ import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @author nramasubramani
- * Semaphore - Max of n threads can access the shared resource at a time.
+ * Semaphore - Max of n threads can access the shared resource at a time. 
+ * Solve below problem Using semaphore.
+ * One ATM center has 3 ATM instances and 14 ppl are waiting. Simultaneously 3 ppl can access ATM.
  */
 public class SemaphoreExample {
 
@@ -22,23 +24,25 @@ public class SemaphoreExample {
 		//Only one bowling court is available. One team can play at a time.
 		//System.out.println("***** There is only one bowling court *****");
 		ExecutorService executorService = Executors.newFixedThreadPool(5);
-		/*try {
+		try {
 			Lock bowlingCourt = new ReentrantLock();
+			// Only one bowling court is available. One team can play at a time.
 			playSingleCourtPresent(bowlingCourt, executorService);
 			Thread.sleep(15000);
 		} finally {
-			executorService.shutdown();
-		}*/
+			executorService.shutdownNow();
+		}
 
 		System.out.println("\n\n");
-		// Only one bowling court is available. One team can play at a time.
 		System.out.println("***** There are multiple bowling courts *****");
-		Semaphore multiBowlingCourt = new Semaphore(2); //Max of 2 threads can access the shared resource at a time.
+		
+		//Max of 2 threads can access the shared resource at a time.
+		Semaphore multiBowlingCourt = new Semaphore(2); 
 		try {
 			playMultiCourtPresent(multiBowlingCourt);
 			Thread.sleep(15000);
 		} finally {
-			executorService.shutdown();
+			executorService.shutdownNow();
 		}
 	}
 
@@ -82,6 +86,7 @@ class Group implements Callable<Void> {
 	private String groupName;
 	private Lock bowlingCourt;
 	
+	//Each callable is a task. Same lock is passed for all tasks.
 	public Group(String groupName, Lock bowlingCourt){
 		this.groupName = groupName;
 		this.bowlingCourt = bowlingCourt;
