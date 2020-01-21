@@ -27,7 +27,7 @@ public class Threading
 		// arg1 --> Runnable Target , arg2 --> Name of the thread
 		Thread thread2 = new Thread( acounter, "Alpha Counter" );
 		
-		// creates a separate thread and task(code inside run method) is attached to the thread.s
+		// creates a separate thread and task(code inside run method) is attached to the thread.
 		thread2.start();
 		
 		//Method : 2 : Extending thread class. Drawback. MyThread class cannot inherit
@@ -72,8 +72,7 @@ public class Threading
 //When to use threading, assume you have single processor, you have single program to execute, 
 //you divided the program into multiple tasks and inside the tasks if some tasks need to wait 
 //for some input from the user,
-//good to have multi threading. But inside in none of the individual tasks, 
-//no blocking time means no use to have multi threading.
+//good to have multi threading but if no tasks are blocking tasks no use to have multi threading.
 //Because the intention is when one sub task waits another sub task can execute since they are independent, 
 //but in the above case, since there are no blocking issue, no need to use threading , 
 //no need to split the tasks into sub tasks,
@@ -107,7 +106,8 @@ public class Threading
 //Better you encapsulate your fields better thread safety you will get as result
 
 //atomic operation is a indivisible operation, when one thread executes atomic operation, 
-//no other threads can execute the same operation(routine) until the thread completes the atomic operation.
+//no other threads can execute the same operation(routine) 
+//until the thread completes the atomic operation.
 //when you use normal variables in your class x++ will execute as 3 instructions, 
 //so, thread safety is not ensured.
 //If you use atomic variables the above x++ will be an indivisible operation,
@@ -120,12 +120,11 @@ public class Threading
 //So, all the related operations should be performed as indivisible operations.
 
 //When we use synchronised method, the method is locked by the intrinsic 
-//lock of the object(the instance which called the intrinsic object). 
-//Note, only this routine is locked and not the object is locked means, 
-//no other method can call the method on the same object until the object 
-//finishes its routines(but the method can be called on some other object).
+//lock of the object(the instance is intrinsic object). 
+//no other method can call any synchronized methods on the same object until the object 
+//finishes synchronized call/block (but the method can be called on some other object).
 //So, only the routines are locked, member variables of the particular 
-//object are not locked, the object's member variables can be 
+//object is not locked, the object's member variables can be 
 //modified by some other part of the application when synchronized method 
 //is executing. Only one lock per object, 
 //so, make sure the same lock should be used to protect all the member variables 
@@ -138,7 +137,8 @@ public class Threading
 //or variables,but the task is progressing and object's 
 //state keep changing, so there is a possibility that you do not get the 
 //most recent values of some variables,possibly you will get corrupted data.
-//so lock the complete object and save the snapshot
+//so lock the complete object and save the snapshot. Synchronize all getters and setters.
+//Make them private members. Now read all member values.
 
 class MyThread extends Thread {
 	@Override
