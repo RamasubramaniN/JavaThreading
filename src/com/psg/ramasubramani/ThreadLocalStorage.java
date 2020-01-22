@@ -5,11 +5,16 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 
-//For each thread separate instances of connection objects are maintained, ie connection object is local to thread
+//For each thread separate instances of connection objects are maintained, 
+//ie connection object is local to thread
 //This is very useful in a situation where connection object is mutable.
-//Once a thread starts its execution, even though some other thread modifies connection object, those will not appear to this thread because the object is local to thread.
-//This will very useful when your application moves from single threaded to multiple threaded, and you want to protect all
-//global variables, where these variables are mutable and you don't want these objects to be modified by any thread or you don't
+//Once a thread starts its execution, even though some other 
+//thread modifies connection object, those changes will not be visible to this thread 
+//because the object is local to thread. i.e. local copy maintained for each thread.
+//This will be very useful when your application moves from single threaded 
+//to multi threaded, and you want to protect all
+//global variables, where these variables are mutable and you 
+//don't want these objects to be modified by any thread or you don't
 //want changes in one thread affecting another thread's object
 public class ThreadLocalStorage
 {
@@ -37,7 +42,8 @@ class RunnableThreadClass implements Runnable
 	@Override
 	public void run()
 	{
-		Global.connectionObject.get().setConnectionName( Thread.currentThread().getName() + "-" + Global.connectionObject.get().getConnectionName() );
+		Global.connectionObject.get().setConnectionName
+		( Thread.currentThread().getName() + "-" + Global.connectionObject.get().getConnectionName() );
 		System.out.println("Changed connection name");
 		try {
 			TimeUnit.SECONDS.sleep(2);
@@ -51,7 +57,8 @@ class RunnableThreadClass implements Runnable
 
 	private void printConnectionName()
 	{
-		System.out.println( "Thread Name : " + Thread.currentThread().getName() + ", Connection Name : " + Global.connectionObject.get().getConnectionName() );
+		System.out.println( "Thread Name : " + Thread.currentThread().getName() + 
+		", Connection Name : " + Global.connectionObject.get().getConnectionName() );
 	}
 }
 
