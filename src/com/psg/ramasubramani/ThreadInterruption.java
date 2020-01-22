@@ -5,6 +5,7 @@ import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 public class ThreadInterruption
 {
@@ -33,8 +34,12 @@ public class ThreadInterruption
 				{
 					e.printStackTrace();
 				}
+				//No new tasks can be assigned.
 				executors.shutdown();
-				executors.shutdownNow(); // Internally calls Thread.interrupt() on all the threads started by this particular executor. So each thread routine throws Interrupted exception
+				
+				//Internally calls Thread.interrupt() on all the threads started by this particular 
+				//executor. So each thread routine throws Interrupted exception
+				executors.shutdownNow();
 			}
 			else if ( x == 2 )
 			{
@@ -53,7 +58,7 @@ public class ThreadInterruption
 				t6.start();
 				try
 				{
-					Thread.sleep( 1000 );
+					TimeUnit.SECONDS.sleep(2);
 				}
 				catch ( InterruptedException e ) //7483147657
 				{
@@ -78,18 +83,23 @@ public class ThreadInterruption
 				Future< ? > future6 = executors.submit( new RunnableGenerator( new EvenGenerator() ) );
 				try
 				{
-					Thread.sleep( 1000 );
+					TimeUnit.SECONDS.sleep(2);
 				}
 				catch ( InterruptedException e ) //7483147657
 				{
 					e.printStackTrace();
 				}
 				executors.shutdown();
-				future1.cancel( true );//Attempts to cancel execution of this task. This attempt will fail if the task has already completed, 
-				//has already been cancelled, or could not be cancelled for some other reason. If successful, and this task has not started when cancel is 
-				//called, this task should never run. If the task has already started, then the mayInterruptIfRunning parameter determines 
-				//whether the thread executing this task should be interrupted in an attempt to stop the task. 
-				future2.cancel( true ); //This is the way to stop individual threads in executor pool.
+				future1.cancel( true );//Attempts to cancel execution of this task. 
+				//This attempt will fail if the task has already completed, 
+				//has already been cancelled, or could not be cancelled for some other reason. 
+				//If successful, and this task has not started when cancel is 
+				//called, this task should never run. If the task has already started, 
+				//then the mayInterruptIfRunning parameter determines 
+				//whether the thread executing this task should be interrupted 
+				//in an attempt to stop the task. 
+				future2.cancel( true ); //This is the way to stop individual 
+				//threads in executor pool.
 				future3.cancel( true );
 				future4.cancel( true );
 				future5.cancel( true );
@@ -110,7 +120,9 @@ class OddGenerator implements Marker
 		return id;
 	}
 
-	synchronized int getCount()//This method must be synchronized
+	//This method must be synchronized. 
+	//i.e. Getters & Setters (generate()) should be synchronized.
+	synchronized int getCount()
 	{
 		return count;
 	}
@@ -149,7 +161,7 @@ class EvenGenerator implements Marker
 class RunnableGenerator implements Runnable
 {
 	private Marker markerInstance = null;
-	private static volatile boolean isCancelled = false;
+	private volatile boolean isCancelled = false;
 
 	RunnableGenerator( Marker marker )
 	{

@@ -12,7 +12,7 @@ public class ThreadIntroduction {
 		Thread thread = new Thread(rocketLaunch);
 		//thread.setDaemon(true);
 		thread.start();
-		thread.join();
+		//thread.join();
 		
 		System.out.println("Rocket Launched");
 	}
