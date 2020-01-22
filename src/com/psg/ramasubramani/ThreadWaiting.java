@@ -36,8 +36,13 @@ class Car
 	}
 
 	synchronized void waitForPolishing()
-	{
-		while ( controlFlag )//Dont put if, use while loop. Dont use notify always use notifyall(), inform all the remaining threads, only the thread which satisfies the condition come out of while loop and starts doing its task. because randomly waking up some tasks is not a good approach
+	{/**
+	* Dont put if, use while loop. Dont use notify always use notifyall(), 
+	* inform all the remaining threads, only the thread which satisfies 
+	* the condition come out of while loop and starts doing its task 
+	* because randomly waking up some tasks is not a good approach.
+	*/
+		while ( controlFlag )
 		{
 			try
 			{
@@ -89,17 +94,23 @@ class Waxing implements Runnable
 		{
 			//'Thread.interrupted()' Tests whether the current thread has been interrupted. 
 			//The interrupted status of the thread is cleared by this method.
-			//In other words, if this method were to be called twice in succession, the second call would return false 
-			//(unless the current thread were interrupted again, after the first call had cleared its interrupted status 
+			//In other words, if this method were to be called twice in succession, 
+			//the second call would return false 
+			//(unless the current thread were interrupted again, after the first call 
+			//had cleared its interrupted status 
 			//and before the second call had examined it). 
 
 			//We can use 'Thread.isInterrupted()' also, this will not clear the status of the flag.
-			//The thread throws interrupted exception only when the thread is waiting() or sleeping() or waiting to join()
-			//When there is no such statements inside our run() method, this exception will never be thrown, 
+			//The thread throws interrupted exception only when the thread is waiting() 
+			//or sleeping() or waiting to join()
+			//When there is no such statements inside our run() method, 
+			//this exception will never be thrown, 
 			//but 'Thread.interrupted()' & 'Thread.isInterrupted()' will be set.
 			
-			//When a thread throws interrupted exception, inside the catch block always 'Thread.interrupted()' will be false.
-			//ie the flag value will be cleared, in such a situation you need to use volatile variables to indicate the thread is interrupted,
+			//When a thread throws interrupted exception, inside the catch block 
+			//always 'Thread.interrupted()' will be false.
+			//ie the flag value will be cleared, in such a situation you need to 
+			//use volatile variables to indicate the thread is interrupted,
 			//and use this variable in the while() clause of run() method
 			car.doWaxing();
 			car.waitForPolishing();
@@ -121,9 +132,12 @@ class Polishing implements Runnable
 	{
 		while ( !Thread.interrupted() )
 		{
-			//'Thread.interrupted()' Tests whether the current thread has been interrupted. The interrupted status of the thread is cleared by this method.
-			//In other words, if this method were to be called twice in succession, the second call would return false 
-			//(unless the current thread were interrupted again, after the first call had cleared its interrupted status 
+			//'Thread.interrupted()' Tests whether the current thread has been interrupted. 
+			//The interrupted status of the thread is cleared by this method.
+			//In other words, if this method were to be called twice in succession, 
+			//the second call would return false 
+			//(unless the current thread were interrupted again, after the first 
+			//call had cleared its interrupted status 
 			//and before the second call had examined it). 
 			car.waitForWaxing();
 			car.doPolishing();

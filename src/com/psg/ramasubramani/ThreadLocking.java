@@ -25,7 +25,12 @@ class BlockedMutex
 	//Two counters are mutually exclusive
 	public void oddCounter()
 	{
-		mutexLock.lock();//Blocked mutex of this instance has been locked. oddcounter() , evencounter() any one of the methods acquire lock. The other method has to wait until one finishes its execution	
+		mutexLock.lock();
+		/**
+		 * Blocked mutex of this instance has been locked. oddcounter() , 		
+		 * evencounter() any one of the methods acquire lock. The other method has to 
+		 * wait until one finishes its execution	
+		 */
 		for ( int i = 1; i <= 10; i += 2 )
 		{
 			System.out.println( "Odd Counter Method : " + i );

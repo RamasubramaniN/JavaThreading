@@ -25,7 +25,10 @@ public class ThreadTermination
 		Thread.sleep( 1 );
 		MyRunnableClass.cancelTask();
 		executor.shutdown();
-		executor.awaitTermination( 1, TimeUnit.MICROSECONDS );//Equivalent to join in thread...Blocks until all tasks have completed execution after a shutdown request, or the timeout occurs, or the current thread is interrupted, whichever happens first.
+		executor.awaitTermination( 1, TimeUnit.MICROSECONDS );
+		//Equivalent to join in thread...Blocks until all tasks have completed execution 
+		//after a shutdown request, or the timeout occurs, or the current thread is 
+		//interrupted, whichever happens first.
 	}
 }
 
