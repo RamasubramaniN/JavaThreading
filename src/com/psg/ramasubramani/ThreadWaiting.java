@@ -15,7 +15,7 @@ public class ThreadWaiting
 
 		try
 		{
-			Thread.sleep( 10000 );
+			Thread.sleep( 10000 );//milliseconds.
 		}
 		catch ( InterruptedException e )
 		{
@@ -100,7 +100,8 @@ class Waxing implements Runnable
 			//had cleared its interrupted status 
 			//and before the second call had examined it). 
 
-			//We can use 'Thread.isInterrupted()' also, this will not clear the status of the flag.
+			//We can use 'Thread.isInterrupted()' also, 
+			//this will not clear the status of the flag.
 			//The thread throws interrupted exception only when the thread is waiting() 
 			//or sleeping() or waiting to join()
 			//When there is no such statements inside our run() method, 

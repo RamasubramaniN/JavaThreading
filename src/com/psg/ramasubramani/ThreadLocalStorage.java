@@ -18,21 +18,33 @@ import java.util.concurrent.TimeUnit;
 //want changes in one thread affecting another thread's object
 public class ThreadLocalStorage
 {
-	public static void main( String[] args )
+	public static void main( String[] args ) throws InterruptedException
 	{
 		ExecutorService executor = Executors.newCachedThreadPool();
 		for ( int i = 1; i <= 5; i++ )
 			executor.execute( new RunnableThreadClass() );
+		System.out.println(Global.someString.get());
+		TimeUnit.SECONDS.sleep(3);
+		executor.shutdownNow();
 	}
 }
 
 class Global
 {
+	//ThreadLocals are stored in a special map ThreadLocalMap (native code)
+	//Weak references are used in this map. (Thread is a key - weak reference)
+	//Value can be another map of variables - Just a guess.
 	public static ThreadLocal<Connection> connectionObject = new ThreadLocal<Connection>()
 	{
 		protected Connection initialValue()
 		{
 			return new Connection();
+		}
+	};
+	
+	public static ThreadLocal<String> someString = new ThreadLocal<String>() {
+		protected String initialValue() {
+			return "Ramasubramani N";
 		}
 	};
 }

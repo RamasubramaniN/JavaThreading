@@ -3,8 +3,6 @@
  */
 package com.psg.ramasubramani;
 
-import java.util.concurrent.TimeUnit;
-
 /**
  * @author RAMASUBRAMANIN
  *
@@ -35,10 +33,19 @@ public class VolatileExample {
 		System.out.println(a);
 		System.out.println(b);
 	}
-	
-
 }
 
+/**
+ * Volatile solves following problems.
+ * 1. Visibility - Not reading from cached registers. Read from main memory.
+ * Sometimes program never end due to visibility of the variables.
+ * 2. Atomicity - Read Double values atomically. - c = a + b --> Add lower order byte
+ * and then higher order bytes in 32 bit machine. There is a high chance some other
+ * instruction executes before the second step and try to read c -> Atomic issue.
+ * Volatile solves atomic issue.
+ * 3. Prevents processor reordering instructions.
+ *
+ */
 class Volatile implements Runnable {
 	
 	private boolean ready = false;
