@@ -7,6 +7,30 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+/**
+* InterruptedException is a checked exception. So, you cannot have a catch block catching this exception unless any of your
+* statements throwing this exception in try block. Sleep(), Wait() throws InterruptedException when a thread is interrupted.
+* So, when you interrupt a thread only if any of sleep(), wait(), lock.interruptibly() methods used in try block, then
+* Interrupted Exception will be thrown. -- One way to come out of while loop inside call/run method.
+* 
+* But what if you don't have sleep() or wait() call inside your run/call method. Check for Thread.Interrupted() 
+* run () {
+*	while(Thread.interrupted()) {
+*          Business Logic
+*	}
+* }
+* If you don't have a While loop in your subtask, periodically check Thread.interrupted() flag. Please note Thread.interrupted()
+* call clears the flag. If you make 2 successive calls, after thread's interruption first call returns true but second call
+* returns false.
+*
+* So, always use Thread.interrupted() as a safer way to figure out thread interruption even if run() has sleep/wait.
+* You will also have catch (InterruptedException e) in this case.You can break out of the loop here by adding break; statement.
+* Thread.interrupted() flag will be false inside  InterruptedException catch block. i.e.
+* catch( InterruptedException e ) {
+*	Thread.interrupted(); //always false because interrupted flag is cleared here.
+* }
+*
+*/
 public class ThreadInterruption
 {
 	public static void main( String[] args )
