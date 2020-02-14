@@ -4,9 +4,21 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+/**
+* A thread waiting to excute a synchronized routine/block is a blocking call. Thread cannot be interrupted.
+* Also, thread will wait/block till it gets the lock (Infinite time). This is a drawback. If waiting time is not more this is perfectly fine.
+*
+* lock.tryLock(10, TimeUnit.SECONDS); -- If lock is free within 10 seconds acquires the lock and returns true.
+* -- If lock is not free within 10 seconds, returns false after 10 seconds and executes the next statement, 
+* Not a blocking call (blocked for 10 seconds). This is useful when your thread waits for 10 seconds and if it doesn't
+* get its turn, this thread will continue doing other tasks and it will come back to get the lock later point of time.
+* 
+* lock.interruptibly() - Blocking call but someone can interrupt this thread from blocking. I can wait for any amount of
+* time till I get lock but I will come out of waiting if someone interrupts me. InterruptedException is thrown. 
+*
+**/
 public class ReEntrantLock
 {
-
 	public static void main( String[] args )
 	{
 		//Synchronized
