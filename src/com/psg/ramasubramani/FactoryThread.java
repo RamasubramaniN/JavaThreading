@@ -4,6 +4,8 @@ import java.util.concurrent.ThreadFactory;
 
 //Don't follow this approach, use executors, it takes threadfactory as arguments,
 //It takes care of thread creation using this thread factory
+//Executors.newFixedThreadPool(nThreads, threadFactory);
+//Executors.newCachedThreadPool(threadFactory);
 public class FactoryThread
 {
 	static int i = 0;
