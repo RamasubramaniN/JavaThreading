@@ -26,13 +26,16 @@ public class ThreadTermination
 		
 		executor.shutdown();
 		
-		//Waiting for other threads to join in Executor model. This has to be called only after shutdown
-		//because no more new threads to come in. We will wait only existing threads to complete.
+		
+		/** 
+		* Equivalent to join in thread...
+		* Waiting for other threads to join in Executor model. This has to be called only after shutdown
+		* because no more new threads to come in. We will wait only existing threads to complete.
+		* 
+		* Blocks until all tasks have completed execution after a shutdown request, 
+		* or the timeout occurs, or the current thread is interrupted, whichever happens first.
+		*/
 		executor.awaitTermination( 1, TimeUnit.MICROSECONDS );
-		//
-		//Equivalent to join in thread...Blocks until all tasks have completed execution 
-		//after a shutdown request, or the timeout occurs, or the current thread is 
-		//interrupted, whichever happens first.
 	}
 }
 
