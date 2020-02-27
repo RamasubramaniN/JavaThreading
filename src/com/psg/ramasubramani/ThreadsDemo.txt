@@ -27,6 +27,8 @@ When to use threads?
  Group of Atomic variables
  Visibility, Processor Reordering
  Volatile - Ensures only visibility & processor reordering.
+ 
+ instance sync, static sync
  Synchronized keyword - Ensures visibility, Processor Reordering prevention & atomicity.
  Atomicity.java
  
