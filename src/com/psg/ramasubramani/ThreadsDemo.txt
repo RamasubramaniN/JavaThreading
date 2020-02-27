@@ -28,8 +28,10 @@ When to use threads?
  Visibility, Processor Reordering
  Volatile - Ensures only visibility & processor reordering.
  Synchronized keyword - Ensures visibility, Processor Reordering prevention & atomicity.
+ Atomicity.java
  
  Synchronizing static methods.
+ 
 
 Low level APIs
  
@@ -41,7 +43,6 @@ Low level APIs
  join()
  
  BlockingQueues.java
- Atomicity.java
  ExceptionHandler.java
  ChildThreads.java
  
